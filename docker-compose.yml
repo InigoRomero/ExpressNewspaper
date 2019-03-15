@@ -1,0 +1,29 @@
+version: '3'
+services:
+  web:
+    image: docker-node-express-mongoapp
+    build: ./web-site
+    command: node index.js
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web-site:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - "mongo"
+    links:
+      - "mongo"
+  mongo:
+    image: "mongo"
+    ports:
+      - "27017:27017"
+  adminmongo:
+    image: 0x59/admin-mongo:latest
+    ports:
+      - "8082:8082"
+    environment:
+      - PORT=8082
+      - CONN_NAME=mongo
+      - DB_HOST=mongo
+    links:
+      - mongo
